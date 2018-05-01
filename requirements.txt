@@ -1,0 +1,6 @@
+lxml
+selenium
+bs4
+requests
+xlsxwriter
+shutil
