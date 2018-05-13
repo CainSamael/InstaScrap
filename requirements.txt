@@ -4,3 +4,4 @@ bs4
 requests
 xlsxwriter
 shutil
+tkinter
