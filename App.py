@@ -5,20 +5,21 @@ from xlsxwriter import Workbook
 import os
 import requests
 import shutil
+from insta_login import data
 
 
 class InstaScrap:
     def __init__(self,
-                 username = 'tuusuario',
-                 password = 'tucontraseña',
-                 target_username ='perfildestino'
+                 username = data['usuario'],
+                 password = data['contraseña'],
+                 target_username = data['destino']
                  ):
 
         self.username = username
         self.password = password
         self.target_username = target_username
         self.path = path = target_username
-        self.driver = webdriver.Firefox()
+        self.driver = webdriver.Chrome()
         self.main_url = 'https://www.instagram.com/'
         self.driver.get(self.main_url)
         sleep(3)
@@ -28,10 +29,23 @@ class InstaScrap:
             print('Creando Carpeta ' + path)
             os.mkdir(path)
         self.scroll_down()
+        self.random_scroll()
         self.downloading_images()
 
 
 
+
+    def random_scroll(self):
+        import random
+        for i in range(10):
+            if random.randint(1, 100) % 3 == 0:
+                text = 'window.scrollTo(document.body.scrollHeight, 0);'
+            elif random.randint(1, 100) % 2 == 0:
+                text = 'window.scrollTo(0, document.body.scrollHeight/2);'
+            else:
+                text = 'window.scrollTo(0, document.body.scrollHeight);'
+            self.driver.execute_script(text)
+            sleep(2)
 
     def log_in(self, ):
         try:
@@ -50,7 +64,6 @@ class InstaScrap:
                 sleep(3)
             except Exception:
                 print('Algo Ocurrio Al Intentar Encontrar El Campo De Usuario Y Contraseña')
-
     def scroll_down(self):
         try:
             no_of_posts = self.driver.find_element_by_xpath('//span[text()=" publicaciones"]').text
@@ -69,7 +82,7 @@ class InstaScrap:
                     print('Un Error Ocurrio Mientras Recorria El Perfil')
             sleep(10)
         except Exception:
-            print('No Pude Encontras Publicaciones En El Perfil')
+            print('No Pude Encontrar Publicaciones En El Perfil')
             self.error = True
 
 
@@ -125,17 +138,6 @@ class InstaScrap:
                 print('No Pude Bajar La Imagen ', index)
                 print('Imagen link -->', link)
 
-    def random_scroll(self):
-        import random
-        for i in range(10):
-            if random.randint(1, 100) % 3 == 0:
-                text = 'window.scrollTo(document.body.scrollHeight, 0);'
-            elif random.randint(1, 100) % 2 == 0:
-                text = 'window.scrollTo(0, document.body.scrollHeight/2);'
-            else:
-                text = 'window.scrollTo(0, document.body.scrollHeight);'
-            self.driver.execute_script(text)
-            sleep(2)
 
 if __name__ == '__main__':
     insta = InstaScrap()
